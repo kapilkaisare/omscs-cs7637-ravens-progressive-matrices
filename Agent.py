@@ -12,6 +12,8 @@
 #from PIL import Image
 #import numpy
 
+from rpm_solver.rpm_solver import RPMSolver
+
 class Agent:
     # The default constructor for your Agent. Make sure to execute any
     # processing necessary before your Agent starts solving problems here.
@@ -19,6 +21,7 @@ class Agent:
     # Do not add any variables to this signature; they will not be used by
     # main().
     def __init__(self):
+        self.rpm_solver = RPMSolver();
         pass
 
     # The primary method for solving incoming Raven's Progressive Matrices.
@@ -31,4 +34,4 @@ class Agent:
     # Make sure to return your answer *as an integer* at the end of Solve().
     # Returning your answer as a string may cause your program to crash.
     def Solve(self,problem):
-        return -1
+        return self.rpm_solver.solve_problem(problem)
