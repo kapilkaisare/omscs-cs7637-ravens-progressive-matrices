@@ -13,12 +13,15 @@ class RPMSolver(object):
         self.pattern_b = None
         self.pattern_c = None
         self.options = []
+        self.patterns_extracted = False;
 
     def solve_problem(self, problem):
         self.reset()
         self.problem = problem
         self.read_problem(problem)
-        self.establish_transformations()
+        if self.patterns_extracted:
+            self.establish_transformations()
+            
         return -1
 
     def read_problem(self, problem):
@@ -40,12 +43,13 @@ class RPMSolver(object):
         self.extract_problems2x2(problem)
 
     def extract_patterns(self, problem):
+        self.patterns_extracted = True;
         if problem.problemType == "2x2" and problem.hasVerbal:
-            return self.extract_problems2x2(problem)
+            self.extract_problems2x2(problem)
         elif problem.problemType == "3x3" and problem.hasVerbal:
-            return self.extract_problems3x3(problem)
+            self.extract_problems3x3(problem)
         else:
-            pass
+            self.patterns_extracted = False;
 
     def extract_options(self, problem):
         self.options.append(self.generate_pattern(problem.figures['1']))
@@ -58,6 +62,11 @@ class RPMSolver(object):
     def establish_transformations2x2(self):
         self.transform_ab = self.pattern_a.transforms_to(self.pattern_b)
         self.transform_ac = self.pattern_a.transforms_to(self.pattern_c)
+        diff_ab = self.transform_ab.diff()
+        diff_ac = self.transform_ac.diff()
+        print diff_ab
+        print diff_ac
+        print "---"
 
     def establish_transformations3x3(self):
         pass
@@ -70,8 +79,15 @@ class RPMSolver(object):
         else:
             pass
 
+    def log(self):
+        self.log_problem(self.problem)
+        print self.pattern_a
+        print self.pattern_b
+        print self.pattern_c
+
 
     def log_problem(self, problem):
         print problem.problemType
         print problem.problemSetName
         print problem.figures
+        print problem.hasVerbal
