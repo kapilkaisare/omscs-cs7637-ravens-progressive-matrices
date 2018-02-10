@@ -12,7 +12,12 @@ class Analogy(object):
             for other_node in self.compared_pattern.nodes:
                 analogy_scores[other_node] = node.find_analogy_with(other_node)
             self.analogues[node] = max(analogy_scores, key=lambda key: analogy_scores[key])
-        self.log_analogues()
+
+    def get_analogue_for(self, node):
+        for test_node, analogue in self.analogues.items():
+            if analogue == node:
+                return test_node
+        return None
 
     def log_analogues(self):
         for k, v in self.analogues.items():

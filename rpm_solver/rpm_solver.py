@@ -13,7 +13,8 @@ class RPMSolver(object):
         self.transform_ab = None
         self.transform_ac = None
         self.analogy_ac = None
-        self.options = []
+        self.solution_pattern = None
+        self.options = {}
 
     def reset(self):
         self.problem = None
@@ -23,7 +24,8 @@ class RPMSolver(object):
         self.transform_ab = None
         self.transform_ac = None
         self.analogy_ac = None
-        self.options = []
+        self.solution_pattern = None
+        self.options = {}
 
     def solve_problem(self, problem):
         self.reset()
@@ -32,7 +34,7 @@ class RPMSolver(object):
         self.establish_transformations()
         self.draw_analogies()
         self.generate_solution()
-        return -1
+        return self.solution_validity()
 
     def read_problem(self, problem):
         self.extract_patterns(problem)
@@ -54,12 +56,12 @@ class RPMSolver(object):
         self.extract_options(problem)
 
     def extract_options(self, problem):
-        self.options.append(self.generate_pattern(problem.figures['1']))
-        self.options.append(self.generate_pattern(problem.figures['2']))
-        self.options.append(self.generate_pattern(problem.figures['3']))
-        self.options.append(self.generate_pattern(problem.figures['4']))
-        self.options.append(self.generate_pattern(problem.figures['5']))
-        self.options.append(self.generate_pattern(problem.figures['6']))
+        self.options['1'] = self.generate_pattern(problem.figures['1'])
+        self.options['2'] = self.generate_pattern(problem.figures['2'])
+        self.options['3'] = self.generate_pattern(problem.figures['3'])
+        self.options['4'] = self.generate_pattern(problem.figures['4'])
+        self.options['5'] = self.generate_pattern(problem.figures['5'])
+        self.options['6'] = self.generate_pattern(problem.figures['6'])
 
     def establish_transformations(self):
         self.transform_ab = self.pattern_a.transforms_to(self.pattern_b)
@@ -69,7 +71,27 @@ class RPMSolver(object):
         self.analogy_ac = Analogy(self.pattern_a, self.pattern_c)
 
     def generate_solution(self):
-        pass
+        print "---"
+        print self.problem.name
+        self.solution_pattern = Pattern()
+        for node in self.pattern_c.nodes:
+            analogue = self.analogy_ac.get_analogue_for(node)
+            if analogue:
+                changes = self.transform_ab.changes[analogue]
+                new_attribute_set = node.apply_changes(changes)
+                solution_node = Node(node.name, new_attribute_set)
+                self.solution_pattern.add_node(solution_node)
+            else:
+                print "analogue not found. boo hoo"
+
+    def solution_validity(self):
+        for solution_index, solution_option in self.options.items():
+            test_transformation = self.solution_pattern.transforms_to(solution_option)
+            if not test_transformation.changes_observed():
+                print solution_index
+                return int(solution_index)
+        print "solution not found"
+        return -1
 
     def log(self):
         self.log_problem(self.problem)

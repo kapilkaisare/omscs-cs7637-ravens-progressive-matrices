@@ -52,7 +52,14 @@ class Node(object):
             if attribute in self.attributes and attribute in other_node.attributes and self.attributes[attribute] == other_node.attributes[attribute]:
                 analogy_score = analogy_score + addendum;
         return analogy_score
-    
+
+    def apply_changes(self, changes):
+        new_attribute_set = dict(self.attributes)
+        for changed_key, difference in changes.items():
+            if changed_key in new_attribute_set:
+                new_attribute_set[changed_key] = difference.apply_to(new_attribute_set[changed_key])
+        return new_attribute_set
+
     def log(self):
         print self.name
         print self.attributes

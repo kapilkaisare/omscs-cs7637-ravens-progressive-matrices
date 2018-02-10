@@ -20,8 +20,20 @@ class PatternTransformation(object):
         for from_node, to_node in self.correspondence.items():
             self.changes[from_node] = to_node.minus(from_node)
     
+    def changes_observed(self):
+        changed = False
+        for node, changes in self.changes.items():
+            if any(changes):
+                changed = True
+        return changed
+    
     def log_correspondence(self):
         for k, v in self.correspondence.items():
             print k.name
             print v.name
             print "-"
+
+    def log_changes(self):
+        for k, v in self.changes.items():
+            print k.name
+            print v
