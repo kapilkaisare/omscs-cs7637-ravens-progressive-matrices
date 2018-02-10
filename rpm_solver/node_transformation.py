@@ -1,0 +1,2 @@
+class NodeTransformation(object):
+	pass

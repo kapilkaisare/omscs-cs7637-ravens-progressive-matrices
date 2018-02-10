@@ -1,4 +1,4 @@
-from .transformation import Transformation
+from .pattern_transformation import PatternTransformation
 
 class Pattern(object):
 
@@ -9,4 +9,8 @@ class Pattern(object):
         self.nodes.append(node)
 
     def transforms_to(self, other_pattern):
-        return Transformation(self, other_pattern)
+        return PatternTransformation(self, other_pattern)
+
+    def log_nodes(self):
+        for node in self.nodes:
+            node.log()
