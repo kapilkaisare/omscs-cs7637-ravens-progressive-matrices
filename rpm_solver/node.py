@@ -36,20 +36,29 @@ class Node(object):
         for attribute_type, attribute_value in attributes.items():
             new_attribute = None
             if attribute_type == "shape":
-                new_attribute = Shape(self, attribute_value)
+                new_attribute = Shape(attribute_value)
             elif attribute_type == "fill":
-                new_attribute = Fill(self, attribute_value)
+                new_attribute = Fill(attribute_value)
             elif attribute_type == "angle":
-                new_attribute = Angle(self, attribute_value)
+                new_attribute = Angle(attribute_value)
             elif attribute_type == "size":
-                new_attribute = Size(self, attribute_value)
+                new_attribute = Size(attribute_value)
             elif attribute_type == "inside":
-                new_attribute = Inside(self, attribute_value)
+                attribute_value_list = attribute_value.split(",")
+                new_attribute = Inside(attribute_value_list)
             else:
-                new_attribute = Attribute(self, attribute_value)
+                new_attribute = Attribute(attribute_value)
             new_attribute.parent = self
             self.attributes[attribute_type] = new_attribute
 
+    def translate(self, translation_key):
+        print "Translation key:"
+        print translation_key
+        translated_node = Node(translation_key[self.name], {})
+        for attribute_key, attribute in self.attributes.items():
+            translated_attribute = attribute.translate(translation_key)
+            translated_attribute.parent = translated_node
+        return translated_node
 
     def is_like(self, other):
         if not len(self.attributes.keys()) == len(other.attributes.keys()):

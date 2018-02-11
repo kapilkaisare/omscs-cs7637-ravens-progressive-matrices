@@ -1,5 +1,3 @@
-from .pattern_transformation import PatternTransformation
-
 class Pattern(object):
 
     def __init__(self):
@@ -19,8 +17,12 @@ class Pattern(object):
         node.parent = self
         self.nodes[node.name] = node
 
-    def transforms_to(self, other_pattern):
-        return PatternTransformation(self, other_pattern)
+    def translate(self, node_table):
+        translated_target = Pattern()
+        for node_name, node in self.nodes.items():
+            translated_node = node.translate(node_table)
+            translated_target.add_node(translated_node)
+        return translated_target
 
     def log_nodes(self):
         for node in self.nodes:

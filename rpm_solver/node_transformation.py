@@ -1,2 +1,0 @@
-class NodeTransformation(object):
-	pass
