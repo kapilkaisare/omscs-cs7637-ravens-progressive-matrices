@@ -8,3 +8,6 @@ class Difference(object):
         if self.from_value == original_value:
             return self.to_value
         return original_value
+
+    def log(self):
+        return "From " + self.from_value.value + " to " + self.to_value.value

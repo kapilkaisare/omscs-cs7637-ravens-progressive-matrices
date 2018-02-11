@@ -35,6 +35,7 @@ class RPMSolver(object):
         self.draw_analogies()
         self.generate_solution()
         return self.solution_validity()
+        # return -1
 
     def read_problem(self, problem):
         self.extract_patterns(problem)
@@ -74,23 +75,25 @@ class RPMSolver(object):
         print "---"
         print self.problem.name
         self.solution_pattern = Pattern()
-        for node in self.pattern_c.nodes:
+        for node_name, node in self.pattern_c.nodes.items():
             analogue = self.analogy_ac.get_analogue_for(node)
-            if analogue:
-                changes = self.transform_ab.changes[analogue]
-                new_attribute_set = node.apply_changes(changes)
-                solution_node = Node(node.name, new_attribute_set)
-                self.solution_pattern.add_node(solution_node)
-            else:
+            if not analogue:
                 print "analogue not found. boo hoo"
+                break
+            changes = self.transform_ab.nodes_changed[analogue]
+            solution_node = Node(node.name, {})
+            solution_node.attributes = node.apply_changes(changes)
+            self.solution_pattern.add_node(solution_node)
 
     def solution_validity(self):
         for solution_index, solution_option in self.options.items():
             test_transformation = self.solution_pattern.transforms_to(solution_option)
             if not test_transformation.changes_observed():
-                print solution_index
+                print "Solution found: " + solution_index
                 return int(solution_index)
-        print "solution not found"
+            else:
+                print "option: " + solution_index
+                test_transformation.log_changes()
         return -1
 
     def log(self):

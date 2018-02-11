@@ -7,9 +7,9 @@ class Analogy(object):
         self.detect_analogues()
 
     def detect_analogues(self):
-        for node in self.reference_pattern.nodes:
+        for node_name, node in self.reference_pattern.nodes.items():
             analogy_scores = {}
-            for other_node in self.compared_pattern.nodes:
+            for other_node_name, other_node in self.compared_pattern.nodes.items():
                 analogy_scores[other_node] = node.find_analogy_with(other_node)
             self.analogues[node] = max(analogy_scores, key=lambda key: analogy_scores[key])
 

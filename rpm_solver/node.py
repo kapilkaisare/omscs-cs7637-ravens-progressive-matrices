@@ -1,12 +1,5 @@
+from .attribute import Attribute, Shape, Fill, Angle, Size, Inside
 from .difference import Difference
-
-SIMILARITY_GRADES = {
-    "shape": 10,
-    "size": 1,
-    "fill": 1,
-    "inside": 1,
-    "overlaps": 1
-}
 
 ANALOGY_GRADES = {
     "shape": 1,
@@ -20,36 +13,68 @@ class Node(object):
 
     def __init__(self, name, attributes):
         self.name = name
-        self.attributes = attributes
+        self.attributes = {}
+        self.parent = None
+        self.load_attributes(attributes)
 
-    def has_same_attribute_keys_as(self, other_node):
-        if (set(list(self.attributes.keys())) == set(list(other_node.attributes.keys()))):
-            return True
-        return False
+    def __eq__(self, other):
+        if not len(self.attributes.keys()) == len(other.attributes.keys()):
+            return False
 
-    def has_similar_attribute_keys_as(self, other_node):
-        pass
+        for attribute_key, attribute in self.attributes.items():
+            if attribute != other.attributes[attribute_key]:
+                return False
+
+        return True
+
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+
+    def load_attributes(self, attributes):
+        for attribute_type, attribute_value in attributes.items():
+            new_attribute = None
+            if attribute_type == "shape":
+                new_attribute = Shape(self, attribute_value)
+            elif attribute_type == "fill":
+                new_attribute = Fill(self, attribute_value)
+            elif attribute_type == "angle":
+                new_attribute = Angle(self, attribute_value)
+            elif attribute_type == "size":
+                new_attribute = Size(self, attribute_value)
+            elif attribute_type == "inside":
+                new_attribute = Inside(self, attribute_value)
+            else:
+                new_attribute = Attribute(self, attribute_value)
+            new_attribute.parent = self
+            self.attributes[attribute_type] = new_attribute
+
+
+    def is_like(self, other):
+        if not len(self.attributes.keys()) == len(other.attributes.keys()):
+            return False
+
+        for attribute_key, attribute in self.attributes.items():
+            if attribute_key != "shape" and attribute != other.attributes[attribute_key]:
+                return False
+
+        return True
+
 
     def minus(self, other_node):
         differences = {}
-        for attribute, value in self.attributes.items():
-            if attribute in other_node.attributes:
-                other_value = other_node.attributes[attribute]
+        for attribute_key, value in self.attributes.items():
+            if attribute_key in other_node.attributes:
+                other_value = other_node.attributes[attribute_key]
                 if other_value != value:
-                    differences[attribute] = Difference(value, other_value)
+                    differences[attribute_key] = Difference(value, other_value)
         return differences
-
-    def find_similarity_with(self, other_node):
-        similarity_score = 0
-        for attribute, addendum in SIMILARITY_GRADES.items():
-            if attribute in self.attributes and attribute in other_node.attributes and self.attributes[attribute] == other_node.attributes[attribute]:
-                similarity_score = similarity_score + addendum;
-        return similarity_score
 
     def find_analogy_with(self, other_node):
         analogy_score = 0
-        for attribute, addendum in ANALOGY_GRADES.items():
-            if attribute in self.attributes and attribute in other_node.attributes and self.attributes[attribute] == other_node.attributes[attribute]:
+        for attribute_name, addendum in ANALOGY_GRADES.items():
+            if attribute_name in self.attributes and attribute_name in other_node.attributes and self.attributes[attribute_name] == other_node.attributes[attribute_name]:
                 analogy_score = analogy_score + addendum;
         return analogy_score
 
@@ -60,6 +85,8 @@ class Node(object):
                 new_attribute_set[changed_key] = difference.apply_to(new_attribute_set[changed_key])
         return new_attribute_set
 
-    def log(self):
-        print self.name
-        print self.attributes
+    def log_attributes(self):
+        for attribute_key, attribute in self.attributes.items():
+            print "attribute_key: " + attribute_key
+            print attribute
+            print attribute.value
