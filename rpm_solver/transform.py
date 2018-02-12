@@ -12,15 +12,19 @@ class PatternTransform(object):
         self.find_corresponding_nodes()
 
         self.translated_target = self.target.translate(self.corresponding_nodes)
+        self.transformation_details = self.translated_target - self.source
 
     def __eq__(self, other):
-        source_analogy = PatternAnalogy(self.source, other.source).analogues
-        print source_analogy
-        morphed_target = self.translated_target.translate(source_analogy)
-        return morphed_target == other.translated_target
+        source_analogy = PatternAnalogy(other.source, self.source).analogues
+        other_translated_difference = other.transformation_details.translate(source_analogy)
+        return self.transformation_details == other_translated_difference
+
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __str__(self):
+        return "<PatternTransform: From " + self.source.__str__() + " to " + self.translated_target.__str__() + " >"
 
     def find_corresponding_nodes(self):
         for node_name, node in self.source.nodes.items():

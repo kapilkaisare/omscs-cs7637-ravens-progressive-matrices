@@ -29,15 +29,10 @@ class RPMSolver(object):
         self.options = {}
 
     def solve_problem(self, problem):
-        print ">>> Solving problem: " + problem.name
         self.reset()
-        print ">>>>>> Reset complete"
         self.problem = problem
-        print ">>>>>> Problem loaded"
         self.read_problem(problem)
-        print ">>>>>> Problem read"
         self.establish_transformations()
-        print ">>>>>> Transformations established "
         return self.generate_solution()
 
     def read_problem(self, problem):
@@ -72,10 +67,9 @@ class RPMSolver(object):
 
     def generate_solution(self):
         for solution_index, solution_option in self.options.items():
-            print ">>>>>>>>> Testing Option: " + solution_index
             test_transform = PatternTransform(self.pattern_c, solution_option)
             if test_transform == self.transform_ab:
-                print ">>>>>>>>>>>> Match found: " + solution_index
+                print "Solution found for problem " + self.problem.name + " : " + solution_index
                 return int(solution_index)
         return -1
 

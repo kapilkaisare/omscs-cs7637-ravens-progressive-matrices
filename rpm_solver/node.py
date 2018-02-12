@@ -32,6 +32,25 @@ class Node(object):
         return not self.__eq__(other)
 
 
+    def __sub__(self, other):
+        attribute_changes = {}
+        for attribute_name, attribute in other.attributes.items():
+            if not attribute_name in self.attributes:
+                break
+            change = self.attributes[attribute_name]
+            change = change - other.attributes[attribute_name]
+            if change:
+                attribute_changes[attribute_name] = change
+        return attribute_changes
+
+
+    def __str__(self):
+        attribute_str = ""
+        for attribute_name, attribute in self.attributes.items():
+            attribute_str = attribute_str + " " + attribute.__str__()
+        return "<Node: " + self.name + "    Attributes:" + attribute_str + " >"
+
+
     def load_attributes(self, attributes):
         for attribute_type, attribute_value in attributes.items():
             new_attribute = None
@@ -52,12 +71,13 @@ class Node(object):
             self.attributes[attribute_type] = new_attribute
 
     def translate(self, translation_key):
-        print "Translation key:"
-        print translation_key
+        if self.name not in translation_key:
+            return self
         translated_node = Node(translation_key[self.name], {})
         for attribute_key, attribute in self.attributes.items():
             translated_attribute = attribute.translate(translation_key)
             translated_attribute.parent = translated_node
+            translated_node.attributes[attribute_key] = translated_attribute
         return translated_node
 
     def is_like(self, other):
@@ -93,9 +113,3 @@ class Node(object):
             if changed_key in new_attribute_set:
                 new_attribute_set[changed_key] = difference.apply_to(new_attribute_set[changed_key])
         return new_attribute_set
-
-    def log_attributes(self):
-        for attribute_key, attribute in self.attributes.items():
-            print "attribute_key: " + attribute_key
-            print attribute
-            print attribute.value

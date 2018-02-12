@@ -1,3 +1,5 @@
+from .difference import PatternDifference
+
 class Pattern(object):
 
     def __init__(self):
@@ -13,6 +15,22 @@ class Pattern(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __sub__(self, other):
+        changes = {}
+
+        for node_name, node in other.nodes.items():
+            if node_name in self.nodes:
+                changes[node_name] = self.nodes[node_name] - node
+
+        return PatternDifference(changes)
+
+    def __str__(self):
+        node_str = ""
+        for node_name, node in self.nodes.items():
+            node_str = node_str + " " + node.__str__()
+        return "<Pattern Nodes - " + node_str + " >"
+
+
     def add_node(self, node):
         node.parent = self
         self.nodes[node.name] = node
@@ -23,7 +41,3 @@ class Pattern(object):
             translated_node = node.translate(node_table)
             translated_target.add_node(translated_node)
         return translated_target
-
-    def log_nodes(self):
-        for node in self.nodes:
-            node.log()

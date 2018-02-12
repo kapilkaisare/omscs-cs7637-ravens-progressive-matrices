@@ -19,11 +19,6 @@ class Analogy(object):
                 return test_node
         return None
 
-    def log_analogues(self):
-        for k, v in self.analogues.items():
-            print k.name
-            print v.name
-            print "-"
 
 class PatternAnalogy(object):
 
