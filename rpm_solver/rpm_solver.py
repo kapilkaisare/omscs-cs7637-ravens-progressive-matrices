@@ -69,19 +69,5 @@ class RPMSolver(object):
         for solution_index, solution_option in self.options.items():
             test_transform = PatternTransform(self.pattern_c, solution_option)
             if test_transform == self.transform_ab:
-                print "Solution found for problem " + self.problem.name + " : " + solution_index
                 return int(solution_index)
         return -1
-
-    def log(self):
-        self.log_problem(self.problem)
-        print self.pattern_a
-        print self.pattern_b
-        print self.pattern_c
-
-
-    def log_problem(self, problem):
-        print problem.problemType
-        print problem.problemSetName
-        print problem.figures
-        print problem.hasVerbal

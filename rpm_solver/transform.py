@@ -17,6 +17,7 @@ class PatternTransform(object):
     def __eq__(self, other):
         source_analogy = PatternAnalogy(other.source, self.source).analogues
         other_translated_difference = other.transformation_details.translate(source_analogy)
+        # PatternDifference
         return self.transformation_details == other_translated_difference
 
 

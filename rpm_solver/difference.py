@@ -13,6 +13,27 @@ class Difference(object):
         if type(to_value) == list:
             to_value = "<list>"
         return "<Difference: " + self.attribute_type + " - from " + from_value + " to " + to_value + " >"
+
+    def __eq__(self, other):
+        if (self.attribute_type == "generic") or (self.attribute_type == "shape") or (self.attribute_type == "fill") or (self.attribute_type == "size"):
+            return (self.from_value == other.from_value) and (self.to_value == other.to_value)
+        if self.attribute_type == "angle":
+            self_range = None
+            if int(self.from_value) > int(self.to_value):
+                self_range = int(self.from_value) - int(self.to_value)
+            else:
+                self_range = int(self.from_value) + int(self.to_value)
+            
+            other_range = None
+            if int(other.from_value) > int(other.to_value):
+                other_range = int(other.from_value) - int(other.to_value)
+            else:
+                other_range = int(other.from_value) + int(other.to_value)
+            return self_range == other_range
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
     
     def apply_to(self, original_value):
         if self.from_value == original_value:
@@ -31,10 +52,8 @@ class PatternDifference(object):
             for attribute_key, attribute in node_attributes.items():
                 if attribute_key not in other_changes:
                     return False
-                print "Ole"
-                print attribute_key
-                print attribute
-                print other_changes[attribute_key]
+                if attribute != other_changes[attribute_key]:
+                    return False
         return True
 
     def __ne__(self, other):
