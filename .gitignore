@@ -1,0 +1,12 @@
+__pycache__
+.vscode
+bin
+include
+lib
+*.pyc
+AgentAnswers.csv
+pip-selfcheck.json
+ProblemResults.csv
+SetResults.csv
+student.zip
+.bonnie
