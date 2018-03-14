@@ -12,7 +12,7 @@
 #from PIL import Image
 #import numpy
 
-from rpm_solver.rpm_solver import RPMSolver, AgentType
+from rpm_solver.rpm_solver import RPMSolver
 
 class Agent:
     # The default constructor for your Agent. Make sure to execute any
@@ -33,5 +33,5 @@ class Agent:
     # Make sure to return your answer *as an integer* at the end of Solve().
     # Returning your answer as a string may cause your program to crash.
     def Solve(self,problem):
-        real_agent = RPMSolver(AgentType.SIMONE)
-        return real_agent.solve(problem)
+        solver = RPMSolver()
+        return solver.solve(problem)

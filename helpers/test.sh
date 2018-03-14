@@ -1,2 +1,2 @@
 #!/bin/bash
-python3.4 RavensProject.py
+python2.7 RavensProject.py
