@@ -2,8 +2,9 @@
 Affine Analogy Network
 """
 from ..common.semantic_networks.semantic_network import SemanticNetwork
+from ..common.logger import log
 from .image_datum import ImageDatum
-from .transform import Transform
+from .transformation import Transformation
 
 class AffineAnalogyNetwork(SemanticNetwork):
 
@@ -47,7 +48,8 @@ class AffineAnalogyNetwork(SemanticNetwork):
             self.establish_transformation('F', 'I')
 
     def establish_transformation(self, tail_key, head_key):
+        log("[AffineAnalogyNetwork/establish_transformation] " + tail_key + ", " + head_key)
         tail_node = self.nodes.data[tail_key]
         head_node = self.nodes.data[head_key]
-        transform = Transform(tail_node, head_node)
+        transform = Transformation(tail_node, head_node)
         self.construct_link(transform, tail_node, head_node)

@@ -26,8 +26,9 @@ class RPMSolver(object):
             log("[RPMSolver/solve] No visual representation. Giving up.")
         else:
             self.load_candidates(problem)
-            for solution_number, candidate in self.solution_candidates:
-                log("[RPMSolver/solve] Attempting solution: " + solution_number)
+            print(self.solution_candidates)
+            for solution_key, candidate in self.solution_candidates.iteritems():
+                log("[RPMSolver/solve] Attempting solution: " + solution_key)
                 self.load_network(problem)
                 self.add_candidate(candidate, problem)
                 self.semantic_network.establish_transformations()
@@ -62,7 +63,7 @@ class RPMSolver(object):
         log("[RPMSolver/add_candidate]")
         candidate_label = "I"
         if problem.problemType == "2x2":
-            candidate_label = 'C'
+            candidate_label = 'D'
         self.semantic_network.construct_node(candidate, candidate_label)
 
     def test_coherence(self, problem):
