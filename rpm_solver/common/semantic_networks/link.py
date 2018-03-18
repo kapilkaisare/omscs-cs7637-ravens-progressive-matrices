@@ -13,7 +13,7 @@ class Link(object):
         self.label = label
 
     def __repr__(self):
-        return '<Link ' + self.id + ' connecting ' + self.tail + ' to ' + self.head + ' labelled ' + self.label + ' >'
+        return '<Link ' + str(self.id) + ' connecting ' + str(self.tail) + ' to ' + str(self.head) + ' labelled ' + str(self.label) + ' >'
 
     def __str__(self):
         return self.__repr__()

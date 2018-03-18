@@ -11,7 +11,7 @@ class Set(object):
         self.data = {}
 
     def __repr__(self):
-        return '<Set ' + self.id + ' >'
+        return '<Set ' + str(self.id) + ' >'
 
     def __str__(self):
         return self.__repr__()

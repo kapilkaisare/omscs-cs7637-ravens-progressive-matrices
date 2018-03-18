@@ -10,7 +10,7 @@ class LinkLabel(object):
         self.value = value
 
     def __repr__(self):
-        return '<LinkLabel ' + self.id + ' ' + self.value + ' >'
+        return '<LinkLabel ' + str(self.id) + ' ' + str(self.value) + ' >'
 
     def __str__(self):
         return self.__repr__()

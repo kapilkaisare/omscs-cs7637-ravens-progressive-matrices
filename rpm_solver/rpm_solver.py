@@ -4,7 +4,7 @@
     1. Provides AgentType, which showcases the different solvers available.
     2. Defines RPMSolver, the facade for all solvers
 """
-
+from operator import itemgetter
 from .common.logger import log
 from .visual.affine_analogy_network import AffineAnalogyNetwork
 
@@ -26,14 +26,20 @@ class RPMSolver(object):
             log("[RPMSolver/solve] No visual representation. Giving up.")
         else:
             self.load_candidates(problem)
-            print(self.solution_candidates)
+            self.load_network(problem)
+            self.semantic_network.establish_transformations()
+            transform = self.semantic_network.get_best_similitude_transform()
+            
+            similitudes = {}
             for solution_key, candidate in self.solution_candidates.iteritems():
                 log("[RPMSolver/solve] Attempting solution: " + solution_key)
-                self.load_network(problem)
                 self.add_candidate(candidate, problem)
-                self.semantic_network.establish_transformations()
-                self.test_coherence(problem)
-        log("[RPMSolver/solve] Solution key: " + str(solution))
+                similitudes[solution_key] = 
+                log("[RPMSolver/solve] Similitudes: ")
+                print(similitudes)
+            solution = max(similitudes.iteritems(), key=itemgetter(1))[0]
+            solution = int(solution)
+        print("[RPMSolver/solve] Solution key for " + problem.name + " : " + str(solution))
         return solution
 
     def load_network(self, problem):
@@ -68,11 +74,12 @@ class RPMSolver(object):
 
     def test_coherence(self, problem):
         log("[RPMSolver/test_coherence]")
-        number_of_nodes = len(self.semantic_network.nodes)
-        if number_of_nodes == 4:
-            pass
-        else:
-            pass
+        # self.semantic_network.get_similitude()
+        # number_of_nodes = len(self.semantic_network.nodes)
+        # if number_of_nodes == 4:
+        #     pass
+        # else:
+        #     pass
 
     def establish_transformations(self):
         log("[RPMSolver/establish_transformations]")

@@ -12,7 +12,7 @@ class Node(object):
         self.datum = datum
 
     def __repr__(self):
-        return '<Node ' + self.id + ' >'
+        return '<Node ' + str(self.id) + ' >'
 
     def __str__(self):
         return self.__repr__()
