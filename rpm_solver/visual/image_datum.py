@@ -1,12 +1,12 @@
 from ..common.semantic_networks.node import Node
 from ..common.logger import log
+from .image_operations import ImageOperations
 from itertools import product
 from operator import itemgetter, add
 from PIL import Image, ImageChops
 import math
 
 BLACK_PIXEL = (0, 0, 0, 255)
-IDENTITY_THRESHOLD = 1000
 
 class ImageDatum(Node):
 
@@ -22,14 +22,10 @@ class ImageDatum(Node):
         return '<ImageDatum ' + self.id + ' >'
 
     def __sub__(self, other):
-        area = self.image.width * self.image.height
-        difference = ImageChops.difference(self.image, other.image)
-        sum_of_squares = reduce(add, map(lambda difference, i: difference*(i**2), difference, range(256)))
-        return math.sqrt(sum_of_squares/area)
-
+        return ImageOperations.minus(self.image, other.image)
 
     def __eq__(self, other):
-        return self.image - other.image <= IDENTITY_THRESHOLD
+        return ImageOperations.is_equal(self.image, other.image)
 
     def load_image(self):
         self.image =Image.open(self.datum.visualFilename)

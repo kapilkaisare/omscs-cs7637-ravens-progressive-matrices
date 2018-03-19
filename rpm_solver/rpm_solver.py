@@ -7,7 +7,8 @@
 from operator import itemgetter
 from .common.logger import log
 from .visual.affine_analogy_network import AffineAnalogyNetwork
-
+from .visual.transform import Transform
+from .visual.image_operations import ImageOperations
 """
     RPMSolver:
 
@@ -22,22 +23,23 @@ class RPMSolver(object):
     def solve(self, problem):
         log("[RPMSolver/solve] Problem: " + problem.name)
         solution = -1
-        if not problem.hasVisual or not problem.problemType == "2x2":
+        if not problem.hasVisual:
             log("[RPMSolver/solve] No visual representation. Giving up.")
         else:
             self.load_candidates(problem)
             self.load_network(problem)
             self.semantic_network.establish_transformations()
             transform = self.semantic_network.get_best_similitude_transform()
-            
-            similitudes = {}
-            for solution_key, candidate in self.solution_candidates.iteritems():
-                log("[RPMSolver/solve] Attempting solution: " + solution_key)
-                self.add_candidate(candidate, problem)
-                similitudes[solution_key] = 
-                log("[RPMSolver/solve] Similitudes: ")
-                print(similitudes)
-            solution = max(similitudes.iteritems(), key=itemgetter(1))[0]
+            expected_solution = self.apply_transform(transform)
+            expected_solution.save("/home/kapilkaisare/Projects/src/github.com/kapilkaisare/omscs-cs7637-ravens-progressive-matrices/output/" + problem.name + ".png")
+            log("[RPMSolver/solve] Expected: " + str(expected_solution))
+            if expected_solution != None:
+                for key, candidate in self.solution_candidates.iteritems():
+                    log("[RPMSolver/solve] Matching candidate: " + key)
+                    candidate_image = ImageOperations.load_from_ravens_figure(candidate)
+                    if ImageOperations.is_equal(expected_solution, candidate_image):
+                        solution = key
+                        break
             solution = int(solution)
         print("[RPMSolver/solve] Solution key for " + problem.name + " : " + str(solution))
         return solution
@@ -72,14 +74,40 @@ class RPMSolver(object):
             candidate_label = 'D'
         self.semantic_network.construct_node(candidate, candidate_label)
 
-    def test_coherence(self, problem):
-        log("[RPMSolver/test_coherence]")
-        # self.semantic_network.get_similitude()
-        # number_of_nodes = len(self.semantic_network.nodes)
-        # if number_of_nodes == 4:
-        #     pass
-        # else:
-        #     pass
+    def apply_transform(self, transform):
+        log("[RPMSolver/apply_transform] " + str(transform))
+        node_count = len(self.semantic_network.nodes)
+        if transform[0] == 'vertical' and node_count == 3:
+            return self.apply_transform_to(transform[1], 'B')
+        elif transform[0] == 'horizontal' and node_count == 3:
+            return self.apply_transform_to(transform[1], 'C')
+        elif transform[0] == 'bc' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'H')
+        elif transform[0] == 'dg' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'F')
+        elif transform[0] == 'ac' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'G')
+        elif transform[0] == 'ag' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'C')
+        elif transform[0] == 'ef' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'H')
+        elif transform[0] == 'eh' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'F')
+        elif transform[0] == 'df' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'G')
+        elif transform[0] == 'bh' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'C')
+        elif transform[0] == 'gh' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'H')
+        elif transform[0] == 'cf' and node_count != 3:
+            return self.apply_transform_to(transform[1], 'F')
+        else:
+            return None
+
+    def apply_transform_to(self, transform, node_key):
+        log("[RPMSolver/apply_transform_to] Transform: " + str(transform) + "   Key: " + node_key)
+        image = self.semantic_network.nodes.data[node_key].image
+        return Transform.apply_transform(transform[0], image)
 
     def establish_transformations(self):
         log("[RPMSolver/establish_transformations]")

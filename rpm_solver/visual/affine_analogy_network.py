@@ -30,7 +30,7 @@ class AffineAnalogyNetwork(SemanticNetwork):
     def get_best_similitude_transform(self):
         log("[AffineAnalogyNetwork/get_best_similitude_transform]")
         links = self.links.data
-        if len(self.nodes) == 4:
+        if len(self.nodes) == 3:
             transform_ab = links["AB"].transform
             transform_ac = links["AC"].transform
             if transform_ab[3] > transform_ac[3]:
@@ -38,31 +38,42 @@ class AffineAnalogyNetwork(SemanticNetwork):
             else:
                 return ('vertical', transform_ac)
         else:
-            pass
+            return (sorted([\
+                ('bc', links["BC"].transform),\
+                ('dg', links["DG"].transform),\
+                ('ac', links["AC"].transform),\
+                ('ag', links["AG"].transform),\
+                ('ef', links["EF"].transform),\
+                ('eh', links["EH"].transform),\
+                ('df', links["DF"].transform),\
+                ('bh', links["BH"].transform),\
+                ('gh', links["GH"].transform),\
+                ('cf', links["CF"].transform)\
+            ], key=lambda x: x[1][3]))[-1]
 
     def establish_horizontal_transformations(self):
-        if len(self.nodes) == 4:
+        if len(self.nodes) == 3:
             self.establish_transformation('A', 'B')
-            self.establish_transformation('C', 'D')
         else:
             self.establish_transformation('A', 'B')
             self.establish_transformation('B', 'C')
+            self.establish_transformation('A', 'C')
             self.establish_transformation('D', 'E')
             self.establish_transformation('E', 'F')
+            self.establish_transformation('D', 'F')
             self.establish_transformation('G', 'H')
-            self.establish_transformation('H', 'I')
 
     def establish_vertical_transformations(self):
-        if len(self.nodes) == 4:
+        if len(self.nodes) == 3:
             self.establish_transformation('A', 'C')
-            self.establish_transformation('B', 'D')
         else:
             self.establish_transformation('A', 'D')
             self.establish_transformation('D', 'G')
+            self.establish_transformation('A', 'G')
             self.establish_transformation('B', 'E')
             self.establish_transformation('E', 'H')
+            self.establish_transformation('B', 'H')
             self.establish_transformation('C', 'F')
-            self.establish_transformation('F', 'I')
 
     def establish_transformation(self, tail_key, head_key):
         log("[AffineAnalogyNetwork/establish_transformation] " + tail_key + ", " + head_key)
