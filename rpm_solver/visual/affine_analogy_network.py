@@ -53,31 +53,30 @@ class AffineAnalogyNetwork(SemanticNetwork):
 
     def establish_horizontal_transformations(self):
         if len(self.nodes) == 3:
-            self.establish_transformation('A', 'B')
+            self.establish_2x2transformation('A', 'B')
         else:
-            self.establish_transformation('A', 'B')
-            self.establish_transformation('B', 'C')
-            self.establish_transformation('A', 'C')
-            self.establish_transformation('D', 'E')
-            self.establish_transformation('E', 'F')
-            self.establish_transformation('D', 'F')
-            self.establish_transformation('G', 'H')
+            self.establish_3x3transformation('A', 'B', 'C')
+            self.establish_3x3transformation('D', 'E', 'F')
 
     def establish_vertical_transformations(self):
         if len(self.nodes) == 3:
-            self.establish_transformation('A', 'C')
+            self.establish_2x2transformation('A', 'C')
         else:
-            self.establish_transformation('A', 'D')
-            self.establish_transformation('D', 'G')
-            self.establish_transformation('A', 'G')
-            self.establish_transformation('B', 'E')
-            self.establish_transformation('E', 'H')
-            self.establish_transformation('B', 'H')
-            self.establish_transformation('C', 'F')
+            self.establish_3x3transformation('A', 'D', 'G')
+            self.establish_3x3transformation('B', 'E', 'H')
 
-    def establish_transformation(self, tail_key, head_key):
-        log("[AffineAnalogyNetwork/establish_transformation] " + tail_key + ", " + head_key)
+    def establish_2x2transformation(self, tail_key, head_key):
+        log("[AffineAnalogyNetwork/establish_2x2transformation] " + tail_key + ", " + head_key)
         tail_node = self.nodes.data[tail_key]
         head_node = self.nodes.data[head_key]
         transform_key = tail_key + head_key
         self.construct_link(transform_key, tail_node, head_node)
+
+    def establish_3x3transformation(self, tail_1_key, tail_2_key, head_key):
+        log("[AffineAnalogyNetwork/establish_3x3transformation] " + tail_1_key + ", " + tail_2_key + " ," + head_key)
+        tail1_node = self.nodes.data[tail_1_key]
+        tail2_node = self.nodes.data[tail_2_key]
+        head_node = self.nodes.data[head_key]
+        transform_key = tail_1_key + tail_2_key + head_key
+        self.construct_link(transform_key, (tail1_node, tail2_node), head_node)
+

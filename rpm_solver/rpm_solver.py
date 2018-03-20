@@ -31,7 +31,7 @@ class RPMSolver(object):
             self.semantic_network.establish_transformations()
             transform = self.semantic_network.get_best_similitude_transform()
             expected_solution = self.apply_transform(transform)
-            expected_solution.save("/home/kapilkaisare/Projects/src/github.com/kapilkaisare/omscs-cs7637-ravens-progressive-matrices/output/" + problem.name + ".png")
+            # expected_solution.save("/home/kapilkaisare/Projects/src/github.com/kapilkaisare/omscs-cs7637-ravens-progressive-matrices/output/" + problem.name + ".png")
             log("[RPMSolver/solve] Expected: " + str(expected_solution))
             if expected_solution != None:
                 for key, candidate in self.solution_candidates.iteritems():
@@ -41,7 +41,7 @@ class RPMSolver(object):
                         solution = key
                         break
             solution = int(solution)
-        print("[RPMSolver/solve] Solution key for " + problem.name + " : " + str(solution))
+        # print("[RPMSolver/solve] Solution key for " + problem.name + " : " + str(solution))
         return solution
 
     def load_network(self, problem):

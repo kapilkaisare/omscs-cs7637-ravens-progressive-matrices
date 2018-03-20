@@ -1,3 +1,3 @@
 def log(message):
-    print(message)
+    #print(message)
     pass

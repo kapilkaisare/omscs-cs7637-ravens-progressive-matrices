@@ -20,7 +20,7 @@ class IMAGE_COMPOSITION_OPERAND(object):
 
 TRANSFORMS2x2 = [Transform.IDENTITY, Transform.MIRROR, Transform.FLIP, Transform.ROTATE_90, Transform.ROTATE_180, Transform.ROTATE_270]
 
-TRANSFORMS3x3 = [Transform.IDENTITY, Transform.MIRROR, Transform.FLIP, Transform.ROTATE_90, Transform.ROTATE_180, Transform.ROTATE_270, Transform.UNION, Transform.INTERSECTION, Transform.XOR]
+TRANSFORMS3x3 = [Transform.UNION, Transform.INTERSECTION, Transform.XOR]
 
 BLACK_PIXEL = (0, 0, 0, 255)
 
@@ -29,18 +29,34 @@ class Transformation(Link):
     def __init__(self, tail, head, label):
         Link.__init__(self, tail, head, label)
         self.id = self.label.value
-        self.difference_tail_head = ImageOperations.difference(self.tail.image, self.head.image)
-        self.difference_head_tail = ImageOperations.difference(self.head.image, self.tail.image)
+        self.union = None
+        self.intersection = None
+        self.xor = None
+        
+        if type(tail) is tuple:
+            self.union = self.calculate_union(tail[0], tail[1])
+            self.intersection = self.calculate_intersection(tail[0], tail[1])
+            self.xor = self.calculate_xor(tail[0], tail[1])
+
         self.transform = self.compute_best_fit_similitude_transformation()
 
     def compute_best_fit_similitude_transformation(self):
         transforms = []
-        for transform in TRANSFORMS2x2:
-            transformed_image = Transform.apply_transform(transform, self.tail.image)
-            ic_operand, ic_operator, score = self.compute_image_composition_operand(transformed_image, self.head.image)
-            transforms.append((transform, ic_operand, ic_operator, score))
-        transforms.sort(key=lambda tup: tup[3])
-        return transforms[-1]
+        if self.union == None:
+            for transform in TRANSFORMS2x2:
+                transformed_image = Transform.apply_transform(transform, self.tail.image)
+                ic_operand, ic_operator, score = self.compute_image_composition_operand(transformed_image, self.head.image)
+                transforms.append((transform, ic_operand, ic_operator, score))
+            transforms.sort(key=lambda tup: tup[3])
+            return transforms[-1]
+        else:
+            for transform in TRANSFORMS3x3:
+                transformed_image = Transform.apply_transform(transform, self.tail.image)
+                ic_operand, ic_operator, score = self.compute_image_composition_operand(transformed_image, self.head.image)
+                transforms.append((transform, ic_operand, ic_operator, score))
+            transforms.sort(key=lambda tup: tup[3])
+            return transforms[-1]
+
 
     def compute_image_composition_operand(self, image_a, image_b):
         a1b1 = self.compute_similarity(image_a, image_b, 1, 1)
@@ -82,6 +98,17 @@ class Transformation(Link):
             if pixels_a[x, y] == BLACK_PIXEL or pixels_b[x, y] == BLACK_PIXEL:
                 union_image_pixels[x, y] = BLACK_PIXEL
         return union_image
+
+    def calculate_xor(self, image_a, image_b):
+        xor_image = Image.new("RGBA", image_a.size, "white")
+        xor_image_pixels = xor_image.load()
+        pixels_a = image_a.load()
+        pixels_b = image_b.load()
+        width, height = image_a.size
+        for x, y in list(product(range(width), range(height))):
+            if (pixels_a[x, y] == BLACK_PIXEL and pixels_b[x, y] != BLACK_PIXEL) or (pixels_a[x, y] != BLACK_PIXEL and pixels_b[x, y] == BLACK_PIXEL):
+                xor_image_pixels[x, y] = BLACK_PIXEL
+        return xor_image
 
     def calculate_minus(self, image_a, image_b):
         minus_image = Image.new("RGBA", image_a.size, "white")

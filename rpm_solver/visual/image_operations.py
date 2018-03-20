@@ -17,8 +17,8 @@ class ImageOperations(object):
         sq = (value*((idx%256)**2) for idx, value in enumerate(h))
         sum_of_squares = sum(sq)
         rms = math.sqrt(sum_of_squares/float(image_a.size[0] * image_b.size[1]))
-        print "Differenmce >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        print rms
+        # print "Differenmce >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+        # print rms
         return rms
 
     @staticmethod
