@@ -34,9 +34,9 @@ class Transformation(Link):
         self.xor = None
         
         if type(tail) is tuple:
-            self.union = self.calculate_union(tail[0], tail[1])
-            self.intersection = self.calculate_intersection(tail[0], tail[1])
-            self.xor = self.calculate_xor(tail[0], tail[1])
+            self.union = self.calculate_union(tail[0].image, tail[1].image)
+            self.intersection = self.calculate_intersection(tail[0].image, tail[1].image)
+            self.xor = self.calculate_xor(tail[0].image, tail[1].image)
 
         self.transform = self.compute_best_fit_similitude_transformation()
 

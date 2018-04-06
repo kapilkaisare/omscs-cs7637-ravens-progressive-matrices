@@ -4,7 +4,7 @@ import math
 
 class ImageOperations(object):
 
-    IDENTITY_THRESHOLD = 4.0
+    IDENTITY_THRESHOLD = 94.0
 
     @staticmethod
     def is_equal(image_a, image_b):
@@ -17,8 +17,6 @@ class ImageOperations(object):
         sq = (value*((idx%256)**2) for idx, value in enumerate(h))
         sum_of_squares = sum(sq)
         rms = math.sqrt(sum_of_squares/float(image_a.size[0] * image_b.size[1]))
-        # print "Differenmce >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        # print rms
         return rms
 
     @staticmethod

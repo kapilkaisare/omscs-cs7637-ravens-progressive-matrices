@@ -5,9 +5,9 @@ from ..common.semantic_networks.semantic_network import SemanticNetwork
 from ..common.semantic_networks.link_label import LinkLabel
 from ..common.logger import log
 from .image_datum import ImageDatum
-from .transformation import Transformation
+from .transformation.binary_transformation import BinaryTransformation
 
-class AffineAnalogyNetwork(SemanticNetwork):
+class ImageAnalogyNetwork3x3(SemanticNetwork):
 
     def __init__(self):
         SemanticNetwork.__init__(self)
@@ -19,7 +19,7 @@ class AffineAnalogyNetwork(SemanticNetwork):
 
     def construct_link(self, label_data, tail, head):
         link_label = LinkLabel(label_data)
-        link = Transformation(tail, head, link_label)
+        link = BinaryTransformation(tail, head, link_label)
         self.links.add(link)
         return link.id
 
