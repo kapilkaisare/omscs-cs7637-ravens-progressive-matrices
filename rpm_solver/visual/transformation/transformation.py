@@ -18,8 +18,6 @@ class IMAGE_COMPOSITION_OPERAND(object):
     A_MINUS_B = "a_minus_b"
     B_MINUS_A = "b_minus_a"
 
-BLACK_PIXEL = (0, 0, 0, 255)
-
 class Transformation(Link):
 
     def __init__(self, tail, head, label):

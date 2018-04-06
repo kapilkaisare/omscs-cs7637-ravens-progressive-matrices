@@ -31,8 +31,8 @@ class RPMSolver(object):
             self.load_candidates(problem)
             self.load_network(problem)
             self.semantic_network.establish_transformations()
+
             transforms = self.semantic_network.get_transforms()
-            # log(transforms)
             for transform in transforms:
                 expected_solution = self.apply_transform(transform)
                 for key, candidate in self.solution_candidates.iteritems():

@@ -1,6 +1,6 @@
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageDraw
 
-
+BLACK_PIXEL = (0, 0, 0, 255)
 
 class Transform(object):
     IDENTITY = 'identity'
@@ -12,6 +12,9 @@ class Transform(object):
     UNION = 'union'
     INTERSECTION = 'intersection'
     XOR = 'xor'
+    CENTER_FLOOD_FILL = 'center_flood_fill'
+    PIXELS_ADDED = 'pixels_added'
+    PIXELS_REMOVED = 'pixels_removed'
 
     @staticmethod
     def compute_identity_transform(image):
@@ -50,6 +53,14 @@ class Transform(object):
         return transformed_image
 
     @staticmethod
+    def compute_center_flood_fill_transform(image):
+        transformed_image = image.copy()
+        width, height = transformed_image.size
+        center = (int(0.5 * width), int(0.5 * height))
+        ImageDraw.floodfill(transformed_image, xy=center, value=BLACK_PIXEL)
+        return transformed_image
+
+    @staticmethod
     def compute_union_transform(image_a, image_b):
         pass
 
@@ -75,6 +86,8 @@ class Transform(object):
             return Transform.compute_rotate_180_transform(image)
         elif transform_name == Transform.ROTATE_270:
             return Transform.compute_rotate_270_transform(image)
+        elif transform_name == Transform.CENTER_FLOOD_FILL:
+            return Transform.compute_center_flood_fill_transform(image)
         elif transform_name == Transform.UNION:
             return Transform.compute_union_transform(image, data)
         elif transform_name == Transform.INTERSECTION:

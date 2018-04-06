@@ -2,13 +2,13 @@
 Transformation
 """
 from ... common.logger import log
-from .transform import Transform
-from .transformation import Transformation, IMAGE_COMPOSITION_OPERATOR, IMAGE_COMPOSITION_OPERAND, BLACK_PIXEL
+from .transform import Transform, BLACK_PIXEL
+from .transformation import Transformation, IMAGE_COMPOSITION_OPERATOR, IMAGE_COMPOSITION_OPERAND
 from .image_operations import ImageOperations
 from PIL import Image, ImageOps
 from itertools import product
 
-TRANSFORMS2x2 = [Transform.IDENTITY, Transform.MIRROR, Transform.FLIP, Transform.ROTATE_90, Transform.ROTATE_180, Transform.ROTATE_270]
+TRANSFORMS2x2 = [Transform.IDENTITY, Transform.MIRROR, Transform.FLIP, Transform.ROTATE_90, Transform.ROTATE_180, Transform.ROTATE_270, Transform.CENTER_FLOOD_FILL]
 
 RMS_THRESHOLD = 94.0
 
