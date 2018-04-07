@@ -32,24 +32,17 @@ class RPMSolver(object):
             self.semantic_network.establish_transformations()
 
             transforms = self.semantic_network.get_transforms()
-            # print("Transforms:")
-            # print(transforms)
             for transform in transforms:
                 expected_solution = self.apply_transform(transform)
-                for key, candidate in self.solution_candidates.iteritems():
+                for key, candidate in self.solution_candidates.items():
                     candidate_image = ImageOperations.load_from_ravens_figure(candidate)
                     candidate_matches.append((key, ImageOperations.minus(candidate_image, expected_solution), transform))
 
             candidate_matches.sort(key=lambda tup: tup[1])
-            # print("Candidate matches")
-            # print(candidate_matches)
             if len(candidate_matches) > 0:
                 candidate_solution = candidate_matches[0]
-                # print("Candidate solution")
-                # print(candidate_solution)
-                # expected_solution.save("/home/kapilkaisare/Projects/src/github.com/kapilkaisare/omscs-cs7637-ravens-progressive-matrices/output/" + problem.name + ".png")
                 solution = int(candidate_solution[0])
-        print("[RPMSolver/solve] Solution key for " + problem.name + " : " + str(solution))
+        # print("[RPMSolver/solve] Solution key for " + problem.name + " : " + str(solution))
         return solution
 
     def load_network(self, problem):

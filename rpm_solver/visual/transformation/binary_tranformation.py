@@ -11,6 +11,7 @@ from itertools import product
 TRANSFORMS2x2 = [Transform.IDENTITY, Transform.MIRROR, Transform.FLIP, Transform.ROTATE_90, Transform.ROTATE_180, Transform.ROTATE_270, Transform.CENTER_FLOOD_FILL, Transform.PIXELS_ADDED, Transform.PIXELS_REMOVED, Transform.PIXELS_ADDED_AND_REMOVED]
 
 RMS_THRESHOLD = 94.0
+SIMILITUDE_THRESHOLD = 0.8
 
 class BinaryTransformation(Transformation):
 
@@ -30,8 +31,9 @@ class BinaryTransformation(Transformation):
         for transform in TRANSFORMS2x2:
             transformed_image = Transform.apply_transform(transform, self.tail.image, self.metadata)
             rms = ImageOperations.minus(self.head.image, transformed_image)
-            if rms <= RMS_THRESHOLD:
-                transforms.append((transform, rms, self.metadata))
+            similitude_fitness = ImageOperations.compute_similitude_fitness(self.head.image, transformed_image)
+            if rms <= RMS_THRESHOLD and similitude_fitness >= SIMILITUDE_THRESHOLD:
+                transforms.append((transform, rms, self.metadata, similitude_fitness))
         transforms.sort(key=lambda tup: tup[1])
         return transforms
 

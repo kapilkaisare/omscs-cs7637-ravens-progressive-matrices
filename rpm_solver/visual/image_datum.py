@@ -1,6 +1,6 @@
 from ..common.semantic_networks.node import Node
 from ..common.logger import log
-from .image_operations import ImageOperations
+from .transformation.image_operations import ImageOperations
 from itertools import product
 from operator import itemgetter, add
 from PIL import Image, ImageChops
