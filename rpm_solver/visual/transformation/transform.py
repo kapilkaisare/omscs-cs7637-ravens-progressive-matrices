@@ -1,6 +1,7 @@
 from PIL import Image, ImageOps, ImageDraw
+from itertools import product
 
-BLACK_PIXEL = (0, 0, 0, 255)
+from .image_operations import BLACK_PIXEL, WHITE_PIXEL
 
 class Transform(object):
     IDENTITY = 'identity'
@@ -15,6 +16,7 @@ class Transform(object):
     CENTER_FLOOD_FILL = 'center_flood_fill'
     PIXELS_ADDED = 'pixels_added'
     PIXELS_REMOVED = 'pixels_removed'
+    PIXELS_ADDED_AND_REMOVED = 'pixels_added_and_removed'
 
     @staticmethod
     def compute_identity_transform(image):
@@ -61,6 +63,34 @@ class Transform(object):
         return transformed_image
 
     @staticmethod
+    def compute_add_pixels_transform(image, pixels):
+        transformed_image = image.copy()
+        transformed_image_pixels = transformed_image.load()
+        width, height = transformed_image.size
+        for x, y in list(product(range(width), range(height))):
+            if pixels[x, y] == BLACK_PIXEL:
+                transformed_image_pixels[x, y] = BLACK_PIXEL
+        return transformed_image
+
+    @staticmethod
+    def compute_remove_pixels_transform(image, pixels):
+        transformed_image = image.copy()
+        transformed_image_pixels = transformed_image.load()
+        width, height = transformed_image.size
+        for x, y in list(product(range(width), range(height))):
+            if pixels[x, y] == BLACK_PIXEL:
+                transformed_image_pixels[x, y] = WHITE_PIXEL
+        return transformed_image
+
+    @staticmethod
+    def compute_add_and_remove_pixels_transform(image, metadata):
+        pixels_added = metadata['pixels_added']
+        pixels_removed = metadata['pixels_removed']
+        transformed_image = Transform.compute_add_pixels_transform(image, pixels_added)
+        transformed_image = Transform.compute_remove_pixels_transform(transformed_image, pixels_removed)
+        return transformed_image
+
+    @staticmethod
     def compute_union_transform(image_a, image_b):
         pass
 
@@ -73,7 +103,7 @@ class Transform(object):
         pass
 
     @staticmethod
-    def apply_transform(transform_name, image, data=None):
+    def apply_transform(transform_name, image, data):
         if transform_name == Transform.IDENTITY:
             return Transform.compute_identity_transform(image)
         elif transform_name == Transform.MIRROR:
@@ -88,6 +118,12 @@ class Transform(object):
             return Transform.compute_rotate_270_transform(image)
         elif transform_name == Transform.CENTER_FLOOD_FILL:
             return Transform.compute_center_flood_fill_transform(image)
+        elif transform_name == Transform.PIXELS_ADDED:
+            return Transform.compute_add_pixels_transform(image, data['pixels_added'])
+        elif transform_name == Transform.PIXELS_REMOVED:
+            return Transform.compute_remove_pixels_transform(image, data['pixels_removed'])
+        elif transform_name == Transform.PIXELS_ADDED_AND_REMOVED:
+            return Transform.compute_add_and_remove_pixels_transform(image, data)
         elif transform_name == Transform.UNION:
             return Transform.compute_union_transform(image, data)
         elif transform_name == Transform.INTERSECTION:

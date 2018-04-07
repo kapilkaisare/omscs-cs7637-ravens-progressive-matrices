@@ -25,16 +25,13 @@ class ImageAnalogyNetwork2x2(SemanticNetwork):
         self.establish_vertical_transformations()
 
     def get_transforms(self):
-        log("[AffineAnalogyNetwork/get_transforms]")
         links = self.links.data
         transforms = []
         for transform in links["AB"].transforms:
-            transforms.append(('horizontal', transform[0], transform[1]))
+            transforms.append(('horizontal', transform[0], transform[1], transform[2]))
         for transform in links["AC"].transforms:
-            transforms.append(('vertical', transform[0], transform[1]))
+            transforms.append(('vertical', transform[0], transform[1], transform[2]))
         transforms.sort(key=lambda tup: tup[2])
-        print ">>>>>> Transforms"
-        print transforms
         return transforms
 
     def establish_horizontal_transformations(self):
@@ -44,7 +41,6 @@ class ImageAnalogyNetwork2x2(SemanticNetwork):
         self.establish_transformation('A', 'C')
 
     def establish_transformation(self, tail_key, head_key):
-        log("[AffineAnalogyNetwork/establish_2x2transformation] " + tail_key + ", " + head_key)
         tail_node = self.nodes.data[tail_key]
         head_node = self.nodes.data[head_key]
         transform_key = tail_key + head_key
